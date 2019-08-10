@@ -22,6 +22,8 @@ ONE_OBJS+=osdep/LinuxNetLink.o
 NLTEST_OBJS+=osdep/LinuxNetLink.o node/InetAddress.o node/Utils.o node/Salsa20.o
 NLTEST_OBJS+=nltest.o
 
+CONTROLLER_OBJS=controller/PostgreSQL.o
+
 # for central controller builds
 TIMESTAMP=$(shell date +"%Y%m%d%H%M")
 
@@ -333,7 +335,7 @@ official:	FORCE
 	make -j4 ZT_OFFICIAL=1 all
 
 central-controller:	FORCE
-	make -j4 LDLIBS="-L/usr/pgsql-10/lib/ -lpq -Lext/librabbitmq/centos_x64/lib/ -lrabbitmq" CXXFLAGS="-I/usr/pgsql-10/include -I./ext/librabbitmq/centos_x64/include -fPIC" DEFS="-DZT_CONTROLLER_USE_LIBPQ -DZT_CONTROLLER" ZT_OFFICIAL=1 ZT_USE_X64_ASM_ED25519=1 one
+	make -j4 CXXFLAGS="-I/usr/pgsql-10/include -fPIC" DEFS="-DZT_CONTROLLER" ZT_OFFICIAL=1 ZT_USE_X64_ASM_ED25519=1 one
 
 central-controller-docker:	central-controller
 	docker build -t docker.zerotier.com/zerotier-central/ztcentral-controller:${TIMESTAMP} -f docker/Dockerfile . 
